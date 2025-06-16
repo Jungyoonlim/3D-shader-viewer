@@ -84,7 +84,7 @@ export const useThreeScene = (containerRef: React.RefObject<HTMLDivElement>) => 
       setupLighting(scene);
 
       setInitialized(true);
-      console.log('🚀 Scene initialized with optimizations');
+      console.log('Scene initialized with optimizations');
 
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Scene initialization failed';
