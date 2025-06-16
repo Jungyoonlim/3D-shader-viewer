@@ -83,6 +83,9 @@ export const useThreeScene = (containerRef: React.RefObject<HTMLDivElement>) => 
       // Professional lighting setup
       setupLighting(scene);
 
+      // Add demo objects
+      addDemoObjects(scene);
+
       setInitialized(true);
       console.log('Scene initialized with optimizations');
 
@@ -136,6 +139,126 @@ export const useThreeScene = (containerRef: React.RefObject<HTMLDivElement>) => 
     gridHelper.material.opacity = 0.3;
     gridHelper.material.transparent = true;
     scene.add(gridHelper);
+  };
+
+  // Add demo objects to showcase the 3D viewer
+  const addDemoObjects = (scene: THREE.Scene): void => {
+    // Central rotating cube with shader material
+    const cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
+    const cubeMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        time: { value: 0 },
+        resolution: { value: new THREE.Vector2() }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        varying vec3 vPosition;
+        
+        void main() {
+          vUv = uv;
+          vPosition = position;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float time;
+        varying vec2 vUv;
+        varying vec3 vPosition;
+        
+        void main() {
+          vec2 uv = vUv;
+          
+          // Animated color patterns
+          float r = sin(uv.x * 10.0 + time) * 0.5 + 0.5;
+          float g = sin(uv.y * 10.0 + time * 1.2) * 0.5 + 0.5;
+          float b = sin((uv.x + uv.y) * 8.0 + time * 0.8) * 0.5 + 0.5;
+          
+          gl_FragColor = vec4(r * 0.5 + 0.3, g * 0.3 + 0.7, b * 0.8 + 0.2, 1.0);
+        }
+      `
+    });
+    
+    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    cube.position.set(0, 1, 0);
+    cube.castShadow = true;
+    cube.receiveShadow = true;
+    cube.userData = { type: 'demo-cube', material: cubeMaterial };
+    scene.add(cube);
+
+    // Floating spheres with different materials
+    const sphereGeometry = new THREE.SphereGeometry(0.8, 32, 32);
+    
+    // Glass-like sphere
+    const glassMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x00f5ff,
+      metalness: 0,
+      roughness: 0,
+      transmission: 0.9,
+      transparent: true,
+      opacity: 0.8,
+      clearcoat: 1,
+      clearcoatRoughness: 0
+    });
+    
+    const glassSphere = new THREE.Mesh(sphereGeometry, glassMaterial);
+    glassSphere.position.set(-4, 2, 2);
+    glassSphere.castShadow = true;
+    glassSphere.receiveShadow = true;
+    scene.add(glassSphere);
+
+    // Metallic sphere
+    const metallicMaterial = new THREE.MeshStandardMaterial({
+      color: 0x8b5cf6,
+      metalness: 1,
+      roughness: 0.2
+    });
+    
+    const metallicSphere = new THREE.Mesh(sphereGeometry, metallicMaterial);
+    metallicSphere.position.set(4, 2, 2);
+    metallicSphere.castShadow = true;
+    metallicSphere.receiveShadow = true;
+    scene.add(metallicSphere);
+
+    // Wireframe torus
+    const torusGeometry = new THREE.TorusGeometry(1.5, 0.3, 16, 100);
+    const wireframeMaterial = new THREE.MeshBasicMaterial({
+      color: 0x00f5ff,
+      wireframe: true
+    });
+    
+    const torus = new THREE.Mesh(torusGeometry, wireframeMaterial);
+    torus.position.set(0, 1, -4);
+    torus.rotation.x = Math.PI / 4;
+    scene.add(torus);
+
+    // Add floating particles
+    addParticleSystem(scene);
+  };
+
+  // Add a particle system for atmosphere
+  const addParticleSystem = (scene: THREE.Scene): void => {
+    const particleCount = 1000;
+    const positions = new Float32Array(particleCount * 3);
+    
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 50;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 50;
+    }
+    
+    const particleGeometry = new THREE.BufferGeometry();
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    
+    const particleMaterial = new THREE.PointsMaterial({
+      color: 0x00f5ff,
+      size: 0.1,
+      transparent: true,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending
+    });
+    
+    const particles = new THREE.Points(particleGeometry, particleMaterial);
+    scene.add(particles);
   };
 
   // Initialize on mount

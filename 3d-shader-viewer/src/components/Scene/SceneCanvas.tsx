@@ -7,7 +7,7 @@ interface SceneCanvasProps {
 }
 
 export const SceneCanvas = memo<SceneCanvasProps>(({ className = '' }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null!);
   
   // Initialize Three.js scene
   useThreeScene(containerRef);
