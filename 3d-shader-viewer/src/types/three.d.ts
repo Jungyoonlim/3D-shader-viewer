@@ -36,5 +36,5 @@ export interface ShaderState {
     activeShader: string | null;
     availableShaders: ShaderPreset[];
     shaderUniforms: Record<string, any>;
-    material: 
+    material: THREE.ShaderMaterial | null;
 }
