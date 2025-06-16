@@ -1,6 +1,6 @@
 import React, { useRef, memo } from 'react';
 import { useThreeScene } from '../../hooks/useThreeScene';
-import { useAnimation } from '../../hooks/useAnimation';
+import { useAnimation } from '../../hooks/useAnimations';
 
 interface SceneCanvasProps {
   className?: string;
