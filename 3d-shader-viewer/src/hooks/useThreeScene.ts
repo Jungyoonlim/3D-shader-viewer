@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { useSceneStore } from '../stores/sceneStore';
 
 export const useThreeScene = (containerRef: React.RefObject<HTMLDivElement>) => {
@@ -56,7 +56,6 @@ export const useThreeScene = (containerRef: React.RefObject<HTMLDivElement>) => 
       // Advanced rendering settings (professional touch)
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.2;
-      renderer.physicallyCorrectLights = true;
       
       // Enable extensions for better performance
       renderer.capabilities.logarithmicDepthBuffer = false;

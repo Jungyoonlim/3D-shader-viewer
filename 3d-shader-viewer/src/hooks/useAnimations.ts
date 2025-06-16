@@ -3,7 +3,7 @@ import { useSceneStore } from '@/stores/sceneStore';
 import * as THREE from 'three';
 
 export const useAnimation = () => {
-    const animationFrameRef = useRef<number>();
+    const animationFrameRef = useRef<number | undefined>(0);
     const lastTimeRef = useRef<number>(0);
     const fpsRef = useRef<number[]>([]);
     const frameCountRef = useRef<number>(0);
@@ -59,7 +59,7 @@ export const useAnimation = () => {
             }
 
             // Animate spheres - floating motion
-            if (object.geometry && object.geometry.type === 'SphereGeometry') {
+            if (object instanceof THREE.Mesh && object.geometry.type === 'SphereGeometry') {
                 const originalY = object.userData.originalY || object.position.y;
                 object.userData.originalY = originalY;
                 object.position.y = originalY + Math.sin(timeInSeconds * 2 + object.position.x) * 0.3;
@@ -67,7 +67,7 @@ export const useAnimation = () => {
             }
 
             // Animate torus
-            if (object.geometry && object.geometry.type === 'TorusGeometry') {
+            if (object instanceof THREE.Mesh && object.geometry.type === 'TorusGeometry') {
                 object.rotation.x = Math.PI / 4 + timeInSeconds * 0.2;
                 object.rotation.z = timeInSeconds * 0.5;
             }
