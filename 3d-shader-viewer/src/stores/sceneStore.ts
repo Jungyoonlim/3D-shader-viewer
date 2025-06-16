@@ -28,7 +28,7 @@ interface SceneState {
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     updatePerformance: (fps: number, drawCalls: number, triangles: number) => void;
-    cleanUp: () => void;
+    cleanup: () => void;
 }
 
 export const useSceneStore = create<SceneState>()(
@@ -44,13 +44,52 @@ export const useSceneStore = create<SceneState>()(
     fps: 0,
     drawCalls: 0,
     triangles: 0,
-
+    
     // Actions
     setScene: (scene) => set({ scene }),
     setCamera: (camera) => set({ camera }),
     setRenderer: (renderer) => set({ renderer }),
+    setControls: (controls) => set({ controls }),
+    setInitialized: (initialized) => set({ isInitialized: initialized }),
+    setLoading: (loading) => set({ isLoading: loading }),
+    setError: (error) => set({ error }),
+    updatePerformance: (fps, drawCalls, triangles) => 
+      set({ fps, drawCalls, triangles }),
     
-)
-
-
-
+    cleanup: () => {
+      const { renderer, controls, scene } = get();
+      
+      // Proper cleanup to prevent memory leaks
+      if (controls) {
+        controls.dispose();
+      }
+      
+      if (scene) {
+        scene.traverse((object) => {
+          if (object instanceof THREE.Mesh) {
+            object.geometry?.dispose();
+            if (Array.isArray(object.material)) {
+              object.material.forEach(material => material?.dispose());
+            } else {
+              object.material?.dispose();
+            }
+          }
+        });
+      }
+      
+      if (renderer) {
+        renderer.dispose();
+        renderer.forceContextLoss();
+      }
+      
+      set({
+        scene: null,
+        camera: null,
+        renderer: null,
+        controls: null,
+        isInitialized: false,
+        error: null
+      });
+    }
+  }))
+);
