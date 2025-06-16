@@ -138,7 +138,7 @@ export const colorCycleFragmentShader = `
 export const createShaderMaterial = (
   vertexShader: string,
   fragmentShader: string,
-  uniforms: Record<string, any> = {}
+  uniforms: Record<string, { value: unknown }> = {}
 ): THREE.ShaderMaterial => {
   const defaultUniforms = {
     time: { value: 0 },
