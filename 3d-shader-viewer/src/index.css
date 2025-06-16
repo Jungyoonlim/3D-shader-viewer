@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dark-bg text-white overflow-hidden;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-card-bg backdrop-blur-md border border-white/20 rounded-lg;
+  }
+  
+  .cyber-button {
+    @apply bg-gradient-to-r from-cyber-blue to-cyber-purple 
+           text-white px-4 py-2 rounded-lg font-medium
+           hover:shadow-lg hover:shadow-cyber-blue/25 
+           transition-all duration-300 transform hover:scale-105;
+  }
+  
+  .loading-spinner {
+    @apply animate-spin rounded-full h-8 w-8 border-2 
+           border-white/20 border-t-cyber-blue;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
